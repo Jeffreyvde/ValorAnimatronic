@@ -1,5 +1,7 @@
+#pragma once
+
 #ifndef Button_H
-#define Button_h
+#define Button_H
 
 #include <Arduino.h>
 
@@ -29,7 +31,7 @@ public:
    *  
    * @param buttonPin The pin that has to be checked 
    */
-  Button(int buttonPin);
+  Button(uint8_t buttonPin);
 
   /**
    * @brief Set Up the button pin mode 
@@ -85,7 +87,7 @@ private:
   void TickLongPressState(int pinState);
   void TickEndPressState(int pinState);
 
-  int pin;
+  uint8_t pin;
   ButtonState state = ButtonState::NoPress;
 
   unsigned long bounceOverTime = 0;

@@ -1,8 +1,9 @@
 #include "Button.h"
+#include "menu/Menu.h"
 #include <Arduino.h>
 
 Button button(2);
-Button::ButtonState state;
+Menu menu(button, 12, 13);
 
 void setup() 
 {
@@ -11,17 +12,10 @@ void setup()
   {
     // Wait till Serial is ready
   }
-  button.SetUp();
+  menu.SetUp();
 }
 
 void loop() 
 {
-  button.Tick();
-
-  const auto currentState = button.GetState();
-  if(state != currentState)
-  {
-    state = currentState;
-    Serial.println((int)state);
-  }
+  menu.Tick();
 }

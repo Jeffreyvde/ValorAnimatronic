@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(const int buttonPin)
+Button::Button(const uint8_t buttonPin)
 {
     pin = buttonPin;
 }
