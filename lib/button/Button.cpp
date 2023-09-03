@@ -1,8 +1,8 @@
 #include "Button.h"
 
 Button::Button(const uint8_t buttonPin)
+ : pin(buttonPin)
 {
-    pin = buttonPin;
 }
 
 void Button::SetUp()

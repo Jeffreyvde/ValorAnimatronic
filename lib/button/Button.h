@@ -1,7 +1,7 @@
-#pragma once
-
 #ifndef Button_H
 #define Button_H
+
+#pragma once
 
 #include <Arduino.h>
 
