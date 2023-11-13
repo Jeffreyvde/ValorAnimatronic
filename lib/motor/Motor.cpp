@@ -1,7 +1,9 @@
 #include "Motor.h"
 
-Motor::Motor(uint8_t pinForward, uint8_t pinBackward)
-    : pinForward(pinForward),
+Motor::Motor(const Encoder &encoder, const Controller &controller, uint8_t pinForward, uint8_t pinBackward)
+    : encoder(encoder),
+      controller(controller),
+      pinForward(pinForward),
       pinBackward(pinBackward)
 {
 }

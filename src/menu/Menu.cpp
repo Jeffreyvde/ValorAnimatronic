@@ -52,7 +52,7 @@ void Menu::SetState(MenuState newState)
 {
     state = newState;
 
-    digitalWrite(headStatePin, (state == MenuState::Head) ? HIGH : LOW);
+    digitalWrite(headStatePin, (state == MenuState::Head || state == MenuState::RopeBackward) ? HIGH : LOW);
     digitalWrite(ropeStatePin, (state == MenuState::RopeForward || state == MenuState::RopeBackward) ? HIGH : LOW);
     headMotor.Stop();
     wingMotor.Stop();
@@ -91,7 +91,7 @@ void Menu::CheckMotorToggle(bool forward, Motor &motor)
         }
         else
         {
-            constexpr int slowMovementMotor = 100;
+            constexpr int slowMovementMotor = 50;
             motor.SetSpeed(forward, slowMovementMotor);
         }
     }

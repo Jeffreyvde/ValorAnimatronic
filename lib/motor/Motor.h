@@ -4,6 +4,8 @@
 #pragma once
 
 #include <Arduino.h>
+#include "encoder/Encoder.h"
+#include "controller/Controller.h"
 
 class Motor
 {
@@ -11,10 +13,12 @@ public:
     /**
      * @brief Construct a new Motor 
      *
+     * @param encoder The encoder for the motor 
+     * @param controller the PID controller for the Motor
      * @param pinForward The pin to forward the 
      * @param pinBackward The pin to 
      */
-    Motor(uint8_t pinForward, uint8_t pinBackward);
+    Motor(const Encoder& encoder, const Controller& controller, uint8_t pinForward, uint8_t pinBackward);
 
     /**
      * @brief Set up the motor pins
@@ -45,6 +49,9 @@ public:
     bool IsActive() const;
 
 private:
+    const Encoder& encoder;
+    const Controller& controller;
+
     uint8_t pinForward; 
     uint8_t pinBackward;
 
