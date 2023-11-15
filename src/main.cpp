@@ -1,14 +1,22 @@
 #include "Button.h"
 #include "Motor.h"
 #include "encoder/Encoder.h"
+#include "controller/PidController.h"
 #include "menu/Menu.h"
 #include <Arduino.h>
 
+
 Button button(2);
-Motor headMotor(6, 9);
 Encoder headEncoder(7, 5);
-Motor wingMotor(10, 11);
 Encoder wingEncoder(4, 3);
+PidController angleControllerHead(.2, 0, 0);
+PidController speedControllerHead(.7, 0, 0);
+PidController angleControllerWing(0, 0, 0);
+PidController speedControllerWing(0, 0, 0);
+
+Motor wingMotor(wingEncoder, speedControllerWing, angleControllerWing, 10, 11);
+Motor headMotor(headEncoder, speedControllerHead, angleControllerHead, 6, 9);
+
 Menu menu(button, headMotor, wingMotor, 12, 13);
 
 long long test = 0;
@@ -22,16 +30,19 @@ void setup()
   }
   menu.SetUp();
 
-
   headEncoder.SetUp();
   wingEncoder.SetUp();
 
+  headMotor.ToAngle(10);
 }
 
 void loop()
 {
   headEncoder.Tick();
   wingEncoder.Tick(); 
+
+  //wingMotor.Tick();
+  headMotor.Tick();
   
   menu.Tick();
 }

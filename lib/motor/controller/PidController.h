@@ -3,13 +3,13 @@
 
 #pragma once
 
-#include "controller/IController.h"
+#include "IController.h"
 
 /**
  * @brief Basic PID controller
  * 
  */
-class PidController : IController
+class PidController : public IController
 {
 public:
     /**
