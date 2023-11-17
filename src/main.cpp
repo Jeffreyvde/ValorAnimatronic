@@ -6,6 +6,15 @@
 #include <Arduino.h>
 
 
+long long minimumDeltaTime = 50;
+long long tickTime = 0;
+
+long long test = 10000;
+long long test2 = 0;
+
+int desiredAngle = 300;
+bool positive = true;
+
 Button button(2);
 Encoder headEncoder(7, 5);
 Encoder wingEncoder(4, 3);
@@ -19,8 +28,6 @@ Motor headMotor(headEncoder, speedControllerHead, angleControllerHead, 6, 9);
 
 Menu menu(button, headMotor, wingMotor, 12, 13);
 
-long long test = 0;
-
 void setup()
 {
   Serial.begin(9600);
@@ -32,17 +39,32 @@ void setup()
 
   headEncoder.SetUp();
   wingEncoder.SetUp();
-
-  headMotor.ToAngle(10);
 }
 
 void loop()
 {
   headEncoder.Tick();
-  wingEncoder.Tick(); 
+  //wingEncoder.Tick(); 
 
-  //wingMotor.Tick();
-  headMotor.Tick();
-  
+  if(millis() > tickTime)
+  {
+    headMotor.Tick();
+    wingMotor.Tick();
+    tickTime = millis() + minimumDeltaTime;
+  }
+
+  if(millis() > test2 && !headMotor.IsActive())
+  {
+    headMotor.ToAngle(positive ? desiredAngle : -desiredAngle);
+    Serial.println("Switch");
+    positive = !positive;
+    test2 = test + millis();
+  }
+  else if(millis() > test2 && headMotor.IsActive())
+  {
+    Serial.println("Increase");
+    test2 = test + millis();
+  }
+
   menu.Tick();
 }

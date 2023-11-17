@@ -74,8 +74,8 @@ private:
     bool isActive = false;
     bool toAngle = false;
 
-    uint8_t targetSpeed = 0;
-    bool forward = false;
+    int targetSpeed = 0;
+    bool moveForward = false;
 
     int targetAngle = 0;
 

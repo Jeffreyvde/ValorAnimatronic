@@ -24,6 +24,11 @@ void Motor::Tick()
         speed = HandleSpeedFeedForward(deltaTime);
     }
 
+    //Serial.print(" Angle: ");
+    //Serial.print((int)encoder.GetAngle());
+    //Serial.print(" POS: ");
+    //Serial.print(encoder.GetAngle() > 0);
+
     SetMotorSpeed(speed);
     lastMillis = currentTime;
     lastAngle = encoder.GetAngle();
@@ -38,8 +43,8 @@ void Motor::SetUp()
 void Motor::SetSpeed(bool forward, uint8_t speed)
 {
     toAngle = false;
-    this->forward = forward;
-    targetSpeed = (forward) ? speed : -speed;
+    moveForward = forward;
+    targetSpeed = (forward) ? (int)speed : -(int)speed;
 }
 
 void Motor::ToAngle(int angle)
@@ -60,10 +65,11 @@ bool Motor::IsActive() const
 
 double Motor::HandleAngleFeedForward(double deltaTime)
 {  
-    Serial.print("Target Angle: ");
-    Serial.print(targetAngle);
-    Serial.print(" Angle: ");
-    Serial.print((int)encoder.GetAngle());
+    //Serial.print(" Target: ");
+    //Serial.print(targetAngle);
+
+    //Serial.print(" Error: ");
+    //Serial.print((double)(targetAngle - encoder.GetAngle()));
     return angleController.Calculate(targetAngle - encoder.GetAngle(), deltaTime);
 }
 
@@ -77,6 +83,19 @@ void Motor::SetMotorSpeed(double speed)
 {
     const double minSpeed = 35;
     const double zeroRange = 0.1;
+    const double maxSpeed = 255;
+
+    //Serial.print(" Speed: ");
+    //Serial.print(speed);
+
+    bool forward = speed > 0;
+    speed = abs(speed);
+
+    //Serial.print(" Forward: ");
+    //Serial.print(forward);
+
+    Serial.print(" Speed: ");
+    Serial.print(speed);
 
     if(speed < zeroRange)
     {
@@ -86,10 +105,20 @@ void Motor::SetMotorSpeed(double speed)
     {
         speed = minSpeed;
     }
+    else if (speed > maxSpeed)
+    {
+        speed = maxSpeed;
+    }
 
-    uint8_t pwmValue = (uint8_t)abs(speed);
+    uint8_t pwmValue = (uint8_t)speed;
 
-    analogWrite(pinForward, (speed > 0) ? pwmValue : 0);
-    analogWrite(pinBackward, (speed < 0) ? pwmValue : 0);
+    //Serial.print(" Pinforward: ");
+    //Serial.print((forward) ? pwmValue : 0);
+    
+    //Serial.print(" Pinbackward: ");
+    //Serial.println( (!forward) ? pwmValue : 0);
+
+    analogWrite(pinForward, (forward) ? pwmValue : 0);
+    analogWrite(pinBackward, (!forward) ? pwmValue : 0);
     isActive = speed != 0;
 }

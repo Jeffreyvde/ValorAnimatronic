@@ -44,8 +44,8 @@ private:
     uint8_t encoderPinA; 
     uint8_t encoderPinB;
 
-    volatile int encoderPinState;
-    volatile long long angle;
+    volatile int encoderPinState = HIGH;
+    volatile long long angle = 0;
 };
 
 #endif

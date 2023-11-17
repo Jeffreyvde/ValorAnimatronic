@@ -2,9 +2,7 @@
 
 Encoder::Encoder(uint8_t encoderPinA, uint8_t encoderPinB)
     : encoderPinA(encoderPinA),
-      encoderPinB(encoderPinB),
-      encoderPinState(0),
-      angle(0)
+      encoderPinB(encoderPinB)
 {
 }
 
@@ -21,11 +19,15 @@ void Encoder::Tick()
     {
         if(digitalRead(encoderPinB) == HIGH)
         {
-            angle++;
+            angle++;   
+            Serial.print("Right: ");
+            Serial.println((int)angle);
         }
         else
         {
             angle--;
+            Serial.print("Left: ");
+            Serial.println((int)angle);
         }
     }
     encoderPinState = currentPinState;
