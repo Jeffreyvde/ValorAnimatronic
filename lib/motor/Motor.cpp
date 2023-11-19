@@ -89,26 +89,13 @@ void Motor::SetMotorSpeed(double speed)
     //Serial.print(speed);
 
     bool forward = speed > 0;
-    speed = abs(speed);
-
+    speed = constrain(abs(speed), 0, maxSpeed);
+    speed = speed > zeroRange ? map(speed, 0, maxSpeed, minSpeed, maxSpeed)  : 0; 
     //Serial.print(" Forward: ");
     //Serial.print(forward);
 
     Serial.print(" Speed: ");
     Serial.print(speed);
-
-    if(speed < zeroRange)
-    {
-        speed = 0;
-    }
-    else if(speed < minSpeed)
-    {
-        speed = minSpeed;
-    }
-    else if (speed > maxSpeed)
-    {
-        speed = maxSpeed;
-    }
 
     uint8_t pwmValue = (uint8_t)speed;
 
