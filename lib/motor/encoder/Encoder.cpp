@@ -15,19 +15,15 @@ void Encoder::SetUp()
 void Encoder::Tick()
 {
     int currentPinState = digitalRead(encoderPinA);
-    if ((encoderPinState == LOW) && (currentPinState == HIGH))
+    if (encoderPinState != currentPinState)
     {
-        if(digitalRead(encoderPinB) == HIGH)
+        if(digitalRead(encoderPinB) == currentPinState)
         {
             angle++;   
-            Serial.print("Right: ");
-            Serial.println((int)angle);
         }
         else
         {
             angle--;
-            Serial.print("Left: ");
-            Serial.println((int)angle);
         }
     }
     encoderPinState = currentPinState;

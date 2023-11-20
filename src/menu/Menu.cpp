@@ -79,6 +79,28 @@ void Menu::GoToNextState()
 
 void Menu::OnAnimationStateTick()
 {
+    static int instruction = false;
+    constexpr int desiredAngle = 1200;
+
+    const auto buttonState = changeButton.GetState();
+    if(buttonState == Button::ButtonState::StartPress)
+    {
+        if (instruction == 0)
+        {
+            headMotor.ToAngle(desiredAngle);
+            instruction = 1;
+        }
+        else if(instruction == 1)
+        {
+            headMotor.ToAngle(-desiredAngle);
+            instruction = 2;
+        }
+        else if(instruction == 2)
+        {
+            headMotor.ToAngle(0);
+            instruction = 0;
+        }
+    }
 }
 
 void Menu::CheckMotorToggle(bool forward, Motor &motor)
