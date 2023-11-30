@@ -6,18 +6,19 @@
 #include <Arduino.h>
 
 
-long long minimumDeltaTime = 50;
+long long minimumDeltaTime = 20;
 long long tickTime = 0;
 
 constexpr uint8_t headEncoderPin = 3;
 constexpr uint8_t wingEncoderPin = 2;
+constexpr uint8_t buttonPin = 4;
 
-Button button(4);
+Button button(buttonPin);
 Encoder headEncoder(headEncoderPin, 5);
 Encoder wingEncoder(wingEncoderPin, 7);
-PidController angleControllerHead(.2, 0, 0);
-PidController speedControllerHead(.7, 0, 0);
-PidController angleControllerWing(0, 0, 0);
+PidController angleControllerHead(.18, 0, .03);
+PidController speedControllerHead(0, 0, 0);
+PidController angleControllerWing(.45, 0, .005);
 PidController speedControllerWing(0, 0, 0);
 
 Motor wingMotor(wingEncoder, speedControllerWing, angleControllerWing, 10, 11);

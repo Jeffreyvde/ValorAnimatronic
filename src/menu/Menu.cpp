@@ -79,27 +79,37 @@ void Menu::GoToNextState()
 
 void Menu::OnAnimationStateTick()
 {
-    static int instruction = false;
-    constexpr int desiredAngle = 1200;
+    static int instruction = 0;
+
+    constexpr int desiredHeadAngle = 1200;
+
 
     const auto buttonState = changeButton.GetState();
-    if(buttonState == Button::ButtonState::StartPress)
+    if(buttonState == Button::ButtonState::EndPress)
     {
+        constexpr int instructions = 5;
         if (instruction == 0)
         {
-            headMotor.ToAngle(desiredAngle);
-            instruction = 1;
+            constexpr int desiredWingAngle = -450;
+            wingMotor.ToAngle(desiredWingAngle);
         }
         else if(instruction == 1)
         {
-            headMotor.ToAngle(-desiredAngle);
-            instruction = 2;
+            wingMotor.ToAngle(0);
         }
         else if(instruction == 2)
         {
-            headMotor.ToAngle(0);
-            instruction = 0;
+            headMotor.ToAngle(desiredHeadAngle);
         }
+        else if (instruction == 3)
+        {
+            headMotor.ToAngle(-desiredHeadAngle);
+        }
+        else if (instruction == 4)
+        {
+            headMotor.ToAngle(0);
+        }
+         instruction = ++instruction % instructions;
     }
 }
 
@@ -113,7 +123,7 @@ void Menu::CheckMotorToggle(bool forward, Motor &motor)
         }
         else
         {
-            constexpr int slowMovementMotor = 50;
+            constexpr int slowMovementMotor = 35;
             motor.SetSpeed(forward, slowMovementMotor);
         }
     }

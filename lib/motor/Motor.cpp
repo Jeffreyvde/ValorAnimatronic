@@ -26,7 +26,8 @@ void Motor::Tick()
     }
     else
     {
-        speed = HandleSpeedFeedForward(deltaTime);
+        speed = targetSpeed;  //HandleSpeedFeedForward(deltaTime);
+        
     }
 
     SetMotorSpeed(speed);
@@ -45,7 +46,7 @@ void Motor::SetSpeed(bool forward, uint8_t speed)
     toAngle = false;
     moveForward = forward;
     targetSpeed = (forward) ? (int)speed : -(int)speed;
-    isActive = true;
+    SetMotorSpeed(targetSpeed);
 }
 
 void Motor::ToAngle(int angle)
@@ -81,7 +82,7 @@ void Motor::SetMotorSpeed(double speed)
     const double minSpeed = 35;
     const double zeroRange = 0.1;
     const double maxSpeed = 255;
-
+    
     bool forward = speed > 0;
     speed = constrain(abs(speed), 0, maxSpeed);
     speed = speed > zeroRange ? map(speed, 0, maxSpeed, minSpeed, maxSpeed)  : 0; 
