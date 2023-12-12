@@ -1,7 +1,8 @@
 #include "Menu.h"
 
-Menu::Menu(Button &changeStateButton, Motor &headMotor, Motor &wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin)
+Menu::Menu(Button &changeStateButton, AnimationManager& animationManager, Motor &headMotor, Motor &wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin)
     : changeButton(changeStateButton),
+      animationManager(animationManager),
       headMotor(headMotor),
       wingMotor(wingMotor),
       headStatePin(ledHeadStatePin),
@@ -20,6 +21,7 @@ void Menu::SetUp()
 void Menu::Tick()
 {
     changeButton.Tick();
+    animationManager.Tick();
 
     switch (state)
     {
@@ -79,37 +81,44 @@ void Menu::GoToNextState()
 
 void Menu::OnAnimationStateTick()
 {
-    static int instruction = 0;
+    // static int instruction = 0;
 
-    constexpr int desiredHeadAngle = 1200;
-
-
+    // constexpr int desiredHeadAngle = 1200;
+    // const auto buttonState = changeButton.GetState();
+    // if(buttonState == Button::ButtonState::EndPress)
+    // {
+    //     constexpr int instructions = 5;
+    //     if (instruction == 0)
+    //     {
+    //         constexpr int desiredWingAngle = -450;
+    //         wingMotor.ToAngle(desiredWingAngle);
+    //     }
+    //     else if(instruction == 1)
+    //     {
+    //         wingMotor.ToAngle(0);
+    //     }
+    //     else if(instruction == 2)
+    //     {
+    //         headMotor.ToAngle(desiredHeadAngle);
+    //     }
+    //     else if (instruction == 3)
+    //     {
+    //         headMotor.ToAngle(-desiredHeadAngle);
+    //     }
+    //     else if (instruction == 4)
+    //     {
+    //         headMotor.ToAngle(0);
+    //     }
+    //     instruction = (instruction + 1) % instructions;
+    // }
+    
     const auto buttonState = changeButton.GetState();
     if(buttonState == Button::ButtonState::EndPress)
     {
-        constexpr int instructions = 5;
-        if (instruction == 0)
+        if(!animationManager.IsBusy())
         {
-            constexpr int desiredWingAngle = -450;
-            wingMotor.ToAngle(desiredWingAngle);
+            animationManager.PlayNext();
         }
-        else if(instruction == 1)
-        {
-            wingMotor.ToAngle(0);
-        }
-        else if(instruction == 2)
-        {
-            headMotor.ToAngle(desiredHeadAngle);
-        }
-        else if (instruction == 3)
-        {
-            headMotor.ToAngle(-desiredHeadAngle);
-        }
-        else if (instruction == 4)
-        {
-            headMotor.ToAngle(0);
-        }
-         instruction = ++instruction % instructions;
     }
 }
 

@@ -3,8 +3,11 @@
 #include "encoder/Encoder.h"
 #include "controller/PidController.h"
 #include "menu/Menu.h"
+#include "animation/AnimationManager.h"
+#include "animation/MotorAnimatable.h"
+#include "animation/Animation.h"
+#include "animation/IAnimatable.h"
 #include <Arduino.h>
-
 
 long long minimumDeltaTime = 20;
 long long tickTime = 0;
@@ -24,7 +27,23 @@ PidController speedControllerWing(0, 0, 0);
 Motor wingMotor(wingEncoder, speedControllerWing, angleControllerWing, 10, 11);
 Motor headMotor(headEncoder, speedControllerHead, angleControllerHead, 6, 9);
 
-Menu menu(button, headMotor, wingMotor, 12, 13);
+MotorAnimatable wingAnimatable(wingMotor);
+MotorAnimatable headAnimatable(headMotor);
+
+TimelineValue baseAnimationValuesHead[] = {{"1200", 0}, {"-1200", 0}, {"0", 0}};
+TimelineValue baseAnimationValuesWing[] = {{"300", 2000}, {"40", 0}, {"0", 0}};
+
+Timeline baseAnimationTimelineWing[] = {3, baseAnimationValuesWing};
+Timeline baseAnimationTimelineWing[] = {3, baseAnimationValuesHead};
+IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable};
+
+Animation baseAnimation(baseAnimationTimeline, animationComponents, 1);
+
+Animation animations[] = {baseAnimation};
+
+AnimationManager animationManager(animations, 1);
+
+Menu menu(button, animationManager, headMotor, wingMotor, 12, 13);
 
 void HandleHeadEncoderTick()
 {
@@ -53,11 +72,13 @@ void setup()
 
   attachInterrupt(digitalPinToInterrupt(headEncoderPin), HandleHeadEncoderTick, CHANGE);
   attachInterrupt(digitalPinToInterrupt(wingEncoderPin), HandleWingEncoderTick, CHANGE);
+
+  animationManager.PlayNext();
 }
 
 void loop()
 {
-  if(millis() > tickTime)
+  if (millis() > tickTime)
   {
     headMotor.Tick();
     wingMotor.Tick();

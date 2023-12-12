@@ -21,7 +21,13 @@ public:
      * @param animationComponents The components for the timeline
      * @param components The amount of components. Should be the length of both arrays.
      */
-    Animation(Timeline timelines[], IAnimatable animationComponents[], uint16_t components);
+    Animation(Timeline timelines[], IAnimatable* animationComponents[], uint16_t components);
+
+    /**
+     * @brief Destroy the Animation object
+     * 
+     */
+    ~Animation();
 
     /**
      * @brief Play the animation. If the animation is already playing this is ignored.
@@ -51,30 +57,75 @@ public:
 private:
     
     /**
+     * @brief The state of animation element
+     * 
+     */
+    enum class AnimationState
+    {
+        /**
+         * @brief Waiting for the animation to start
+         * 
+         */
+        Waiting,
+
+        /**
+         * @brief The animation element is currently getting to the location
+         * 
+         */
+        Active,
+        /**
+         * @brief The animation element is finished and ready for a new instruction
+         * 
+         */
+        Idle
+    };
+
+
+    /**
+     * @brief What Animation element is this step on
+     * 
+     */
+    struct AnimationElementData
+    {
+        uint16_t step;
+        AnimationState state;
+        unsigned long animationActivationTime;
+    };
+    
+    /**
      * @brief Reset the state of the animation to zero.
      * 
      */
     void Reset();
 
     /**
-     * @brief Set the Component Delay object delay
-     * 
-     * @param componentIndex Which component to set the array for
-     */
-    void SetComponentDelay(uint16_t componentIndex);
-
-    /**
      * @brief Set the next instruction for a component
      * 
-     * @param componentIndex Which component to set the array for
+     * @param componentIndex Which component to set the instruction for
      */
-    void NextComponentInstruction(uint16_t componentIndex);
+    void StartComponentInstruction(uint16_t componentIndex);
+
+    /**
+     * @brief Set the instructions delay
+     * 
+     * @param componentIndex Which to set the delay for
+     */
+    void SetInstructionDelay(uint16_t componentIndex);
+
+    /**
+     * @brief Is a component at the last step
+     * 
+     * @param componentIndex Which component to check
+     * @return true The component is at its last step
+     * @return false The component has steps left
+     */
+    bool AtLastStep(uint16_t componentIndex) const;
 
     Timeline* timelines;
-    IAnimatable* animationComponents; 
+    IAnimatable** animationComponents; 
     uint16_t components;
 
-    uint16_t* currentSteps;
+    AnimationElementData* animationSteps;
     bool started = false;
 };
 

@@ -18,7 +18,7 @@ void AnimationManager::PlayNext()
     if(IsBusy())
         return;
 
-    currentAnimation = ++currentAnimation % (highestAnimationIndex + 1);
+    currentAnimation = (currentAnimation + 1) % (highestAnimationIndex + 1);
     animations[currentAnimation].Play();
 }
 

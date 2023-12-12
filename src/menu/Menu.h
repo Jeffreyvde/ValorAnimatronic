@@ -5,7 +5,12 @@
 
 #include "Button.h"
 #include "Motor.h"
+#include "animation/AnimationManager.h"
 
+/**
+ * @brief The menu for the Valor animatronic
+ * 
+ */
 class Menu
 {
 public:
@@ -13,12 +18,13 @@ public:
      * @brief Construct a new Menu object
      *
      * @param changeStateButton Button to change the state
+     * @param animationManager The animation manager that holds the animations
      * @param headMotor The motor that controls the head mechanism
      * @param wingMotor The motor that controls the wing mechanism 
      * @param ledHeadStatePin Led pin that indicates the head state
      * @param ledRopeStatePin Led pin that indicates the rope state
      */
-    Menu(Button& changeStateButton, Motor& headMotor, Motor& wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin);
+    Menu(Button& changeStateButton, AnimationManager& animationManager, Motor& headMotor, Motor& wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin);
 
     /**
      * @brief Set the Up for the Arduino
@@ -73,6 +79,8 @@ private:
 
     Button& changeButton;
     Button::ButtonState previousButtonState;
+
+    AnimationManager& animationManager;
 
     Motor& headMotor; 
     Motor& wingMotor;

@@ -1,36 +1,81 @@
 #include "Animation.h"
 #include "Arduino.h"
 
-Animation::Animation(Timeline timelines[], IAnimatable animationComponents[], uint16_t components)
+Animation::Animation(Timeline timelines[], IAnimatable* animationComponents[], uint16_t components)
+    : timelines(timelines)
+    , animationComponents(animationComponents)
+    , components(components)
+
 {
+    animationSteps = (AnimationElementData*)malloc(sizeof(AnimationElementData) * components);
+    Reset();
+}
+
+Animation::~Animation()
+{
+    free(animationSteps);
+    animationSteps = nullptr;
 }
 
 void Animation::Play()
 {
-    if(IsBusy)
+    if(started)
     {
         return;
     }
-
-
-
+    started = true;
 }
 
 void Animation::Tick()
 {
+    if(!started)
+        return;
+
+    const unsigned long time = millis();
     for (uint16_t i = 0; i < components; i++)
     { 
-        if()
-    
-    }
 
+        AnimationElementData* data = &animationSteps[i];
+        switch (data->state)
+        {
+        case AnimationState::Active:
+            if(animationComponents[i]->IsFinished())
+            {
+                data->step++; 
+                if(AtLastStep(i))
+                {
+                    data->state = AnimationState::Idle;
+                }
+                else
+                {
+                    SetInstructionDelay(i);
+                }
+            }
+            break;
+        case AnimationState::Waiting:
+            if(time > data->animationActivationTime)
+            {
+                StartComponentInstruction(i);
+            }
+            break;
+        case AnimationState::Idle:
+            // Wait
+            break;
+        }
+    }
+    
+    if(!IsBusy())
+    {
+        started = false;
+        Reset();
+    }
 }
 
 void Animation::Stop()
 {
     for (uint16_t i = 0; i < components; i++)
     {
-        animationComponents[i].Stop();
+        animationComponents[i]->Stop();
     }
     Reset();
 }
@@ -44,28 +89,38 @@ bool Animation::IsBusy() const
 
     for (uint16_t i = 0; i < components; i++)
     {
-        if(timelines[i].length != currentSteps[i] || !animationComponents[i].IsFinished())
+        if(!AtLastStep(i) || animationSteps[i].state != AnimationState::Idle)
         {
-            return false;
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 void Animation::Reset()
 {   
+    started = false;
     for (uint16_t i = 0; i < components; i++)
-    {
-        currentSteps[i] = 0;
+    { 
+        animationSteps[i] = {0, AnimationState::Waiting, millis() + timelines[i].values[0].delay};
     }
 }
 
-void Animation::SetComponentDelay(uint16_t componentIndex)
+void Animation::StartComponentInstruction(uint16_t componentIndex)
 {
-    currentDelays[componentIndex] = millis() + timelines[componentIndex].values[currentSteps[componentIndex]].ticksDelay;
+    uint16_t step = animationSteps[componentIndex].step;
+    animationComponents[componentIndex]->Start(timelines[componentIndex].values[step].instruction);
+    animationSteps[componentIndex].state = AnimationState::Active;
 }
 
-void Animation::NextComponentInstruction(uint16_t componentIndex)
+void Animation::SetInstructionDelay(uint16_t componentIndex)
 {
-    currentSteps[componentIndex]++;
+    AnimationElementData* data = &animationSteps[componentIndex]; 
+    data->animationActivationTime = millis() + timelines[componentIndex].values[data->step].delay;
+    data->state = AnimationState::Waiting;
+}
+
+bool Animation::AtLastStep(uint16_t componentIndex) const
+{
+    return animationSteps[componentIndex].step >= timelines[componentIndex].length;
 }

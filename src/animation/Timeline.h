@@ -4,18 +4,15 @@
 #pragma once
 
 #include <stdint.h>
+#include "TimeLineValue.h"
 
-#define TIMELINE_BUFFER_SIZE = 16;
-
-struct TimelineValue
-{
-    char instruction[TIMELINE_BUFFER_SIZE];
-    long long ticksDelay;
-};
-
+/**
+ * @brief A timeline of values for an animation to follow
+ * 
+ */
 struct Timeline
 {
-    int length;
+    uint16_t length;
     TimelineValue* values;    
 };
 #endif
