@@ -34,7 +34,6 @@ void Animation::Tick()
     const unsigned long time = millis();
     for (uint16_t i = 0; i < components; i++)
     { 
-
         AnimationElementData* data = &animationSteps[i];
         switch (data->state)
         {

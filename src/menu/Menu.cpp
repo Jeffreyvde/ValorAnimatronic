@@ -81,37 +81,6 @@ void Menu::GoToNextState()
 
 void Menu::OnAnimationStateTick()
 {
-    // static int instruction = 0;
-
-    // constexpr int desiredHeadAngle = 1200;
-    // const auto buttonState = changeButton.GetState();
-    // if(buttonState == Button::ButtonState::EndPress)
-    // {
-    //     constexpr int instructions = 5;
-    //     if (instruction == 0)
-    //     {
-    //         constexpr int desiredWingAngle = -450;
-    //         wingMotor.ToAngle(desiredWingAngle);
-    //     }
-    //     else if(instruction == 1)
-    //     {
-    //         wingMotor.ToAngle(0);
-    //     }
-    //     else if(instruction == 2)
-    //     {
-    //         headMotor.ToAngle(desiredHeadAngle);
-    //     }
-    //     else if (instruction == 3)
-    //     {
-    //         headMotor.ToAngle(-desiredHeadAngle);
-    //     }
-    //     else if (instruction == 4)
-    //     {
-    //         headMotor.ToAngle(0);
-    //     }
-    //     instruction = (instruction + 1) % instructions;
-    // }
-    
     const auto buttonState = changeButton.GetState();
     if(buttonState == Button::ButtonState::EndPress)
     {
