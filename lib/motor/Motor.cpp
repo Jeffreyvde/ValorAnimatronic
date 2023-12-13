@@ -54,6 +54,7 @@ void Motor::ToAngle(int angle)
     toAngle = true;
     targetAngle = angle;
     isActive = true;
+    angleController.Reset();
 }
 
 void Motor::Stop()

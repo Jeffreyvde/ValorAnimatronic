@@ -20,6 +20,12 @@ class IController
          * @return double The calculator controller value
          */
         virtual double Calculate(double error, double deltaTime) = 0;
+
+        /**
+         * @brief Reset the controller
+         * 
+         */
+        virtual void Reset() = 0;
 };
 
 #endif

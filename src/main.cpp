@@ -19,9 +19,9 @@ constexpr uint8_t buttonPin = 4;
 Button button(buttonPin);
 Encoder headEncoder(headEncoderPin, 5);
 Encoder wingEncoder(wingEncoderPin, 7);
-PidController angleControllerHead(.36, 0, .1);
+PidController angleControllerHead(.4, 0, .005);
 PidController speedControllerHead(0, 0, 0);
-PidController angleControllerWing(.6, 0, .005);
+PidController angleControllerWing(.5, 0, .005);
 PidController speedControllerWing(0, 0, 0);
 
 Motor wingMotor(wingEncoder, speedControllerWing, angleControllerWing, 10, 11);
@@ -31,9 +31,9 @@ MotorAnimatable wingAnimatable(wingMotor);
 MotorAnimatable headAnimatable(headMotor);
 
 TimelineValue baseAnimationValuesHead[] = {{"1200", 0}, {"-1200", 0}, {"0", 0}};
-TimelineValue baseAnimationValuesWing[] = {{"-250", 2000}, {"-40", 0}, {"0", 0}};
+TimelineValue baseAnimationValuesWing[] = {{"-250", 2000}, {"-40", 500}, {"0", 0}, {"-250", 500}, {"-40", 500}, {"0", 0}};
 
-Timeline baseAnimationTimelineWing = {3, baseAnimationValuesWing};
+Timeline baseAnimationTimelineWing = {6, baseAnimationValuesWing};
 Timeline baseAnimationTimelineHead = {3, baseAnimationValuesHead};
 
 Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing};

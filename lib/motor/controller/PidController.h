@@ -34,7 +34,7 @@ public:
      * @brief Reset the controller
      * 
      */
-    void Reset();
+    void Reset() override;
 
     /**
      * @brief Set the new proportional weight
