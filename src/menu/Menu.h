@@ -57,6 +57,12 @@ private:
      * @param newState What state the menu should have
      */
     void SetState(MenuState newState);
+
+    /**
+     * @brief Tick the current state of the menu
+     * 
+     */
+    void TickState();
     
     /**
      * @brief Get the next state

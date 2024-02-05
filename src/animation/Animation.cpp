@@ -38,7 +38,7 @@ void Animation::Tick()
         switch (data->state)
         {
         case AnimationState::Active:
-            if(animationComponents[i]->IsFinished())
+            if(animationComponents[i]->IsFinished() || time > data->animationEndTime)
             {
                 data->step++; 
                 if(AtLastStep(i))
@@ -115,7 +115,11 @@ void Animation::StartComponentInstruction(uint16_t componentIndex)
 void Animation::SetInstructionDelay(uint16_t componentIndex)
 {
     AnimationElementData* data = &animationSteps[componentIndex]; 
-    data->animationActivationTime = millis() + timelines[componentIndex].values[data->step].delay;
+
+    const unsigned long currentTime = millis();
+    const TimelineValue value = timelines[componentIndex].values[data->step];
+    data->animationActivationTime = currentTime + value.delay;
+    data->animationEndTime = currentTime + value.maxDuration;
     data->state = AnimationState::Waiting;
 }
 

@@ -8,7 +8,7 @@
 #include "animation/Animation.h"
 #include "animation/IAnimatable.h"
 #include <Arduino.h>
-
+                                                                                                                                                                                                    
 long long minimumDeltaTime = 20;
 long long tickTime = 0;
 
@@ -30,20 +30,24 @@ Motor headMotor(headEncoder, speedControllerHead, angleControllerHead, 6, 9);
 MotorAnimatable wingAnimatable(wingMotor);
 MotorAnimatable headAnimatable(headMotor);
 
-TimelineValue baseAnimationValuesHead[] = {{"1200", 0}, {"-1200", 0}, {"0", 0}};
-TimelineValue baseAnimationValuesWing[] = {{"-250", 2000}, {"-40", 500}, {"0", 0}, {"-250", 500}, {"-40", 500}, {"0", 0}};
-
-Timeline baseAnimationTimelineWing = {6, baseAnimationValuesWing};
-Timeline baseAnimationTimelineHead = {3, baseAnimationValuesHead};
-
-Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing};
 IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable};
 
+TimelineValue baseAnimationValuesHead[] = {{"1200", 0, 1000}, {"-1200", 0, 1000}, {"0", 0, 1000}};
+TimelineValue baseAnimationValuesWing[] = {{"-250", 2000, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}, {"-250", 500, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}};
+Timeline baseAnimationTimelineWing = {6, baseAnimationValuesWing};
+Timeline baseAnimationTimelineHead = {3, baseAnimationValuesHead};
+Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing};
 Animation baseAnimation(baseAnimationTimeline, animationComponents, 2);
 
-Animation animations[] = {baseAnimation};
+TimelineValue secondAnimationValuesHead[] = {{"2400", 0, 1000}, {"-2400", 0, 1000}, {"0", 0, 1000}};
+TimelineValue secondAnimationValuesWing[] = {{"-250", 0, 1000}, {"0", 50, 1000}, {"-250", 500, 1000}, {"0", 0, 1000}, {"-250", 50, 1000}, {"0", 0, 1000}};
+Timeline secondAnimationTimelineWing = {6, secondAnimationValuesWing};
+Timeline secondAnimationTimelineHead = {3, secondAnimationValuesHead};
+Timeline secondAnimationTimeline[] = {secondAnimationTimelineHead, secondAnimationTimelineWing};
+Animation secondAnimation(secondAnimationTimeline, animationComponents, 2);
 
-AnimationManager animationManager(animations, 1);
+Animation animations[] = {baseAnimation, secondAnimation};
+AnimationManager animationManager(animations, 2);
 
 Menu menu(button, animationManager, headMotor, wingMotor, 12, 13);
 
@@ -84,5 +88,6 @@ void loop()
     wingMotor.Tick();
     tickTime = millis() + minimumDeltaTime;
   }
+
   menu.Tick();
 }
