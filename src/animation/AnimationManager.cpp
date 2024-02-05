@@ -4,7 +4,7 @@
 AnimationManager::AnimationManager(Animation animations[], uint16_t animationCount)
     : animations(animations)
     , animationCount(animationCount)
-    , highestAnimationIndex(min(animationCount - 1, 0))
+    , highestAnimationIndex(max(animationCount - 1, 0))
 {
 }
 
@@ -18,8 +18,8 @@ void AnimationManager::PlayNext()
     if(IsBusy())
         return;
 
-    currentAnimation = (currentAnimation + 1) % (highestAnimationIndex + 1);
     animations[currentAnimation].Play();
+    currentAnimation = (currentAnimation + 1) % (highestAnimationIndex + 1);
 }
 
 bool AnimationManager::IsBusy() const

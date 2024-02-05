@@ -1,6 +1,6 @@
 #include "Menu.h"
 
-Menu::Menu(Button &changeStateButton, AnimationManager& animationManager, Motor &headMotor, Motor &wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin)
+Menu::Menu(Button &changeStateButton, AnimationManager &animationManager, Motor &headMotor, Motor &wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin)
     : changeButton(changeStateButton),
       animationManager(animationManager),
       headMotor(headMotor),
@@ -23,22 +23,6 @@ void Menu::Tick()
     changeButton.Tick();
     animationManager.Tick();
 
-    switch (state)
-    {
-    case MenuState::Animation:
-        OnAnimationStateTick();
-        break;
-    case MenuState::Head:
-        CheckMotorToggle(true, headMotor);
-        break;
-    case MenuState::RopeForward:
-        CheckMotorToggle(true, wingMotor);
-        break;
-    case MenuState::RopeBackward:
-        CheckMotorToggle(false, wingMotor);
-        break;
-    }
-
     const auto buttonState = changeButton.GetState();
     if (previousButtonState != buttonState)
     {
@@ -46,7 +30,15 @@ void Menu::Tick()
         {
             GoToNextState();
         }
+        else
+        {
+            TickState();
+        }
         previousButtonState = buttonState;
+    }
+    else
+    {
+        TickState();
     }
 }
 
@@ -58,6 +50,25 @@ void Menu::SetState(MenuState newState)
     digitalWrite(ropeStatePin, (state == MenuState::RopeForward || state == MenuState::RopeBackward) ? HIGH : LOW);
     headMotor.Stop();
     wingMotor.Stop();
+}
+
+void Menu::TickState()
+{
+    switch (state)
+        {
+        case MenuState::Animation:
+            OnAnimationStateTick();
+            break;
+        case MenuState::Head:
+            CheckMotorToggle(true, headMotor);
+            break;
+        case MenuState::RopeForward:
+            CheckMotorToggle(true, wingMotor);
+            break;
+        case MenuState::RopeBackward:
+            CheckMotorToggle(false, wingMotor);
+            break;
+        }
 }
 
 void Menu::GoToNextState()
@@ -82,9 +93,9 @@ void Menu::GoToNextState()
 void Menu::OnAnimationStateTick()
 {
     const auto buttonState = changeButton.GetState();
-    if(buttonState == Button::ButtonState::EndPress)
+    if (buttonState == Button::ButtonState::EndPress)
     {
-        if(!animationManager.IsBusy())
+        if (!animationManager.IsBusy())
         {
             animationManager.PlayNext();
         }

@@ -90,6 +90,7 @@ private:
         uint16_t step;
         AnimationState state;
         unsigned long animationActivationTime;
+        unsigned long animationEndTime;
     };
     
     /**
