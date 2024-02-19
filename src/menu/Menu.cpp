@@ -1,6 +1,6 @@
 #include "Menu.h"
 
-Menu::Menu(Button &changeStateButton, AnimationManager &animationManager, Motor &headMotor, Motor &wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin)
+Menu::Menu(Button &changeStateButton, AnimationManager &animationManager, PidMotor &headMotor, PidMotor &wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin)
     : changeButton(changeStateButton),
       animationManager(animationManager),
       headMotor(headMotor),
@@ -90,6 +90,7 @@ void Menu::GoToNextState()
     }
 }
 
+
 void Menu::OnAnimationStateTick()
 {
     const auto buttonState = changeButton.GetState();
@@ -102,7 +103,7 @@ void Menu::OnAnimationStateTick()
     }
 }
 
-void Menu::CheckMotorToggle(bool forward, Motor &motor)
+void Menu::CheckMotorToggle(bool forward, PidMotor &motor)
 {
     if (changeButton.GetState() == Button::ButtonState::EndPress)
     {

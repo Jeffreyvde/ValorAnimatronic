@@ -6,8 +6,9 @@
 #include <Arduino.h>
 #include "encoder/Encoder.h"
 #include "controller/IController.h"
+#include <SparkFun_TB6612.h>
 
-class Motor
+class PidMotor
 {
 public:
     /**
@@ -16,10 +17,9 @@ public:
      * @param encoder The encoder for the motor 
      * @param speedController the PID controller for the speed of the Motor
      * @param angleController the PID controller for the angle of the Motor
-     * @param pinForward The pin to forward the 
-     * @param pinBackward The pin to 
+     * @param motor The motor driver controller
      */
-    Motor(const Encoder& encoder, IController& speedController, IController& angleController, uint8_t pinForward, uint8_t pinBackward);
+    PidMotor(const Encoder& encoder, IController& speedController, IController& angleController, Motor& motor);
 
 
     /**
@@ -68,8 +68,7 @@ private:
     IController& speedController;
     IController& angleController;
 
-    uint8_t pinForward; 
-    uint8_t pinBackward;
+    Motor motor; 
 
     bool isActive = false;
     bool toAngle = false;

@@ -1,15 +1,14 @@
 #include "Motor.h"
 
-Motor::Motor(const Encoder &encoder, IController &speedController, IController &angleController, uint8_t pinForward, uint8_t pinBackward)
+PidMotor::PidMotor(const Encoder &encoder, IController &speedController, IController &angleController, Motor& motor)
     : encoder(encoder),
       speedController(speedController),
       angleController(angleController),
-      pinForward(pinForward),
-      pinBackward(pinBackward)
+      motor(motor)
 {
 }
 
-void Motor::Tick()
+void PidMotor::Tick()
 {
     if(!isActive)
     {
@@ -35,13 +34,11 @@ void Motor::Tick()
     lastAngle = encoder.GetAngle();
 }
 
-void Motor::SetUp()
+void PidMotor::SetUp()
 {
-    pinMode(pinForward, OUTPUT);
-    pinMode(pinBackward, OUTPUT);
 }
 
-void Motor::SetSpeed(bool forward, uint8_t speed)
+void PidMotor::SetSpeed(bool forward, uint8_t speed)
 {
     toAngle = false;
     moveForward = forward;
@@ -49,7 +46,7 @@ void Motor::SetSpeed(bool forward, uint8_t speed)
     SetMotorSpeed(targetSpeed);
 }
 
-void Motor::ToAngle(int angle)
+void PidMotor::ToAngle(int angle)
 {
     toAngle = true;
     targetAngle = angle;
@@ -57,28 +54,28 @@ void Motor::ToAngle(int angle)
     angleController.Reset();
 }
 
-void Motor::Stop()
+void PidMotor::Stop()
 {
     SetSpeed(true, 0);
 }
 
-bool Motor::IsActive() const
+bool PidMotor::IsActive() const
 {
     return isActive;
 }
 
-double Motor::HandleAngleFeedForward(double deltaTime)
+double PidMotor::HandleAngleFeedForward(double deltaTime)
 {  
     return angleController.Calculate(targetAngle - encoder.GetAngle(), deltaTime);
 }
 
-double Motor::HandleSpeedFeedForward(double deltaTime)
+double PidMotor::HandleSpeedFeedForward(double deltaTime)
 {   
     double currentSpeed = (encoder.GetAngle() - lastAngle) / deltaTime; 
     return speedController.Calculate(targetSpeed - currentSpeed, deltaTime);
 }
 
-void Motor::SetMotorSpeed(double speed)
+void PidMotor::SetMotorSpeed(double speed)
 {
     const double minSpeed = 35;
     const double zeroRange = 0.1;
@@ -88,9 +85,6 @@ void Motor::SetMotorSpeed(double speed)
     speed = constrain(abs(speed), 0, maxSpeed);
     speed = speed > zeroRange ? map(speed, 0, maxSpeed, minSpeed, maxSpeed)  : 0; 
 
-    uint8_t pwmValue = (uint8_t)speed;
-
-    analogWrite(pinForward, (forward) ? pwmValue : 0);
-    analogWrite(pinBackward, (!forward) ? pwmValue : 0);
+    motor.drive(forward ? speed : -speed);
     isActive = speed != 0;
 }

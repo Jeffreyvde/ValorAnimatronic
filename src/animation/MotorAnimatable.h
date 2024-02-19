@@ -19,7 +19,7 @@ public:
      * 
      * @param motor The motor that is animated
      */
-    MotorAnimatable(Motor& motor);
+    MotorAnimatable(PidMotor& motor);
 
     /**
      * @brief Instruct the motor to go to a specific angle position.
@@ -43,7 +43,7 @@ public:
     void Stop() override;
 
 private:
-    Motor& motor;
+    PidMotor& motor;
 
 };
 

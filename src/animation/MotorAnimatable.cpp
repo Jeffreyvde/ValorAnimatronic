@@ -1,6 +1,6 @@
 #include "MotorAnimatable.h"
 
-MotorAnimatable::MotorAnimatable(Motor &motor)
+MotorAnimatable::MotorAnimatable(PidMotor &motor)
     : motor(motor)
 {
 }

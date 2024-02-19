@@ -24,7 +24,7 @@ public:
      * @param ledHeadStatePin Led pin that indicates the head state
      * @param ledRopeStatePin Led pin that indicates the rope state
      */
-    Menu(Button& changeStateButton, AnimationManager& animationManager, Motor& headMotor, Motor& wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin);
+    Menu(Button& changeStateButton, AnimationManager& animationManager, PidMotor& headMotor, PidMotor& wingMotor, uint8_t ledHeadStatePin, uint8_t ledRopeStatePin);
 
     /**
      * @brief Set the Up for the Arduino
@@ -81,15 +81,15 @@ private:
      * @param forward Should the motor move forward or backward?
      * @param motor Which of the motors can toggle
      */
-    void CheckMotorToggle(bool forward, Motor& motor);
+    void CheckMotorToggle(bool forward, PidMotor& motor);
 
     Button& changeButton;
     Button::ButtonState previousButtonState;
 
     AnimationManager& animationManager;
 
-    Motor& headMotor; 
-    Motor& wingMotor;
+    PidMotor& headMotor; 
+    PidMotor& wingMotor;
 
     MenuState state;
 

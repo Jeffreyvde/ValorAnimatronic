@@ -8,7 +8,21 @@
 #include "animation/Animation.h"
 #include "animation/IAnimatable.h"
 #include <Arduino.h>
-                                                                                                                                                                                                    
+
+#define AIN1 A3
+#define STBY A4
+#define BIN1 A5
+#define BIN2 6
+#define PWMB 9
+#define AIN2 10
+#define PWMA 11
+
+const int offsetA = 1;
+const int offsetB = 1;
+
+Motor motor1 = Motor(BIN1, BIN2, PWMB, offsetB, STBY);
+Motor motor2 = Motor(AIN1, AIN2, PWMA, offsetA, STBY);
+
 long long minimumDeltaTime = 20;
 long long tickTime = 0;
 
@@ -18,31 +32,31 @@ constexpr uint8_t buttonPin = 4;
 
 Button button(buttonPin);
 Encoder headEncoder(headEncoderPin, 5);
-Encoder wingEncoder(wingEncoderPin, 7);
+Encoder wingEncoder(wingEncoderPin, 8);
 PidController angleControllerHead(.4, 0, .005);
 PidController speedControllerHead(0, 0, 0);
 PidController angleControllerWing(.5, 0, .005);
 PidController speedControllerWing(0, 0, 0);
 
-Motor wingMotor(wingEncoder, speedControllerWing, angleControllerWing, 10, 11);
-Motor headMotor(headEncoder, speedControllerHead, angleControllerHead, 6, 9);
+PidMotor wingMotor(wingEncoder, speedControllerWing, angleControllerWing, motor1);
+PidMotor headMotor(headEncoder, speedControllerHead, angleControllerHead, motor2);
 
 MotorAnimatable wingAnimatable(wingMotor);
 MotorAnimatable headAnimatable(headMotor);
 
 IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable};
 
-TimelineValue baseAnimationValuesHead[] = {{"1200", 0, 1000}, {"-1200", 0, 1000}, {"0", 0, 1000}};
-TimelineValue baseAnimationValuesWing[] = {{"-250", 2000, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}, {"-250", 500, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}};
+TimelineValue baseAnimationValuesHead[] = {{"1200", 0, 2000}, {"-1200", 0, 2000}, {"0", 0, 2000}};
+TimelineValue baseAnimationValuesWing[] = { };// {{"-250", 2000, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}, {"-250", 500, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}};
 Timeline baseAnimationTimelineWing = {6, baseAnimationValuesWing};
-Timeline baseAnimationTimelineHead = {3, baseAnimationValuesHead};
+Timeline baseAnimationTimelineHead = {0, baseAnimationValuesHead};
 Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing};
 Animation baseAnimation(baseAnimationTimeline, animationComponents, 2);
 
-TimelineValue secondAnimationValuesHead[] = {{"2400", 0, 1000}, {"-2400", 0, 1000}, {"0", 0, 1000}};
-TimelineValue secondAnimationValuesWing[] = {{"-250", 0, 1000}, {"0", 50, 1000}, {"-250", 500, 1000}, {"0", 0, 1000}, {"-250", 50, 1000}, {"0", 0, 1000}};
+TimelineValue secondAnimationValuesHead[] = {{"2400", 0, 2000}, {"-2400", 0, 2000}, {"0", 0, 2000}};
+TimelineValue secondAnimationValuesWing[] { };// = {{"-250", 0, 1000}, {"0", 50, 1000}, {"-250", 500, 1000}, {"0", 0, 1000}, {"-250", 50, 1000}, {"0", 0, 1000}};
 Timeline secondAnimationTimelineWing = {6, secondAnimationValuesWing};
-Timeline secondAnimationTimelineHead = {3, secondAnimationValuesHead};
+Timeline secondAnimationTimelineHead = {0, secondAnimationValuesHead};
 Timeline secondAnimationTimeline[] = {secondAnimationTimelineHead, secondAnimationTimelineWing};
 Animation secondAnimation(secondAnimationTimeline, animationComponents, 2);
 
