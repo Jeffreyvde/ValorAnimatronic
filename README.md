@@ -17,3 +17,6 @@ Pin  | Type  | Purpose   |
   A3  | OUTPUT | Motor Driver AIN1 |
   A4  | OUTPUT | Motor Driver STDBY |
   A5  | OUTPUT | Motor Driver BIN1 |
+
+Objectives:
+- Implement motor calibration on startup

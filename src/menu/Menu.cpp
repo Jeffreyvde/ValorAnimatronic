@@ -113,7 +113,7 @@ void Menu::CheckMotorToggle(bool forward, PidMotor &motor)
         }
         else
         {
-            constexpr int slowMovementMotor = 35;
+            constexpr int slowMovementMotor = 20;
             motor.SetSpeed(forward, slowMovementMotor);
         }
     }

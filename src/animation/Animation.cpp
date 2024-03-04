@@ -44,6 +44,7 @@ void Animation::Tick()
                 if(AtLastStep(i))
                 {
                     data->state = AnimationState::Idle;
+                    animationComponents[i]->Stop();
                 }
                 else
                 {

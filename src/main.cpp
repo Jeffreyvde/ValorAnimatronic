@@ -17,7 +17,7 @@
 #define AIN2 10
 #define PWMA 11
 
-const int offsetA = 1;
+const int offsetA = -1;
 const int offsetB = 1;
 
 Motor motor1 = Motor(BIN1, BIN2, PWMB, offsetB, STBY);
@@ -33,9 +33,9 @@ constexpr uint8_t buttonPin = 4;
 Button button(buttonPin);
 Encoder headEncoder(headEncoderPin, 5);
 Encoder wingEncoder(wingEncoderPin, 8);
-PidController angleControllerHead(.4, 0, .005);
+PidController angleControllerHead(.4, 0, .01);
 PidController speedControllerHead(0, 0, 0);
-PidController angleControllerWing(.5, 0, .005);
+PidController angleControllerWing(.4, 0, .005);
 PidController speedControllerWing(0, 0, 0);
 
 PidMotor wingMotor(wingEncoder, speedControllerWing, angleControllerWing, motor1);
@@ -46,17 +46,23 @@ MotorAnimatable headAnimatable(headMotor);
 
 IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable};
 
-TimelineValue baseAnimationValuesHead[] = {{"1200", 0, 2000}, {"-1200", 0, 2000}, {"0", 0, 2000}};
-TimelineValue baseAnimationValuesWing[] = { };// {{"-250", 2000, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}, {"-250", 500, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}};
-Timeline baseAnimationTimelineWing = {6, baseAnimationValuesWing};
-Timeline baseAnimationTimelineHead = {0, baseAnimationValuesHead};
+TimelineValue baseAnimationValuesHead[] = {{"1200", 0, 5000}, {"-1200", 0, 5000}, {"0", 0, 5000}};
+Timeline baseAnimationTimelineHead = {sizeof(baseAnimationValuesHead) / sizeof(TimelineValue), baseAnimationValuesHead};
+
+TimelineValue baseAnimationValuesWing[] =  {{"-250", 2000, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}, {"-250", 500, 1000}, {"-40", 500, 1000}, {"0", 0, 1000}};
+Timeline baseAnimationTimelineWing = {sizeof(baseAnimationValuesWing) / sizeof(TimelineValue), baseAnimationValuesWing};
+
 Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing};
 Animation baseAnimation(baseAnimationTimeline, animationComponents, 2);
 
 TimelineValue secondAnimationValuesHead[] = {{"2400", 0, 2000}, {"-2400", 0, 2000}, {"0", 0, 2000}};
-TimelineValue secondAnimationValuesWing[] { };// = {{"-250", 0, 1000}, {"0", 50, 1000}, {"-250", 500, 1000}, {"0", 0, 1000}, {"-250", 50, 1000}, {"0", 0, 1000}};
-Timeline secondAnimationTimelineWing = {6, secondAnimationValuesWing};
-Timeline secondAnimationTimelineHead = {0, secondAnimationValuesHead};
+Timeline secondAnimationTimelineHead = {sizeof(secondAnimationValuesHead) / sizeof(TimelineValue), secondAnimationValuesHead};
+
+
+
+TimelineValue secondAnimationValuesWing[]  = {{"-250", 0, 1000}, {"0", 50, 1000}, {"-250", 500, 1000}, {"0", 0, 1000}, {"-250", 50, 1000}, {"0", 0, 1000}};
+Timeline secondAnimationTimelineWing = {sizeof(secondAnimationValuesWing) / sizeof(TimelineValue), secondAnimationValuesWing};
+
 Timeline secondAnimationTimeline[] = {secondAnimationTimelineHead, secondAnimationTimelineWing};
 Animation secondAnimation(secondAnimationTimeline, animationComponents, 2);
 
@@ -87,11 +93,10 @@ void setup()
   headEncoder.SetUp();
   wingEncoder.SetUp();
 
-  wingMotor.SetUp();
-  headMotor.SetUp();
-
   attachInterrupt(digitalPinToInterrupt(headEncoderPin), HandleHeadEncoderTick, CHANGE);
   attachInterrupt(digitalPinToInterrupt(wingEncoderPin), HandleWingEncoderTick, CHANGE);
+
+  headMotor.Calibrate();
 }
 
 void loop()
@@ -102,6 +107,5 @@ void loop()
     wingMotor.Tick();
     tickTime = millis() + minimumDeltaTime;
   }
-
   menu.Tick();
 }

@@ -34,8 +34,25 @@ void PidMotor::Tick()
     lastAngle = encoder.GetAngle();
 }
 
-void PidMotor::SetUp()
+void PidMotor::Calibrate()
 {
+    minSpeed = 0;
+    const long long minimumVerifiedAngle = 2;
+    while (encoder.GetAngle() < minimumVerifiedAngle)
+    {
+        // Check if we have reached the maxSpeed
+        if(++minSpeed == maxSpeed)
+        {
+            Serial.println("Setup failed");
+            minSpeed = 0;
+            break;
+        }
+        // Test if we move with the current minimumSpeed
+        SetMotorSpeed(1);
+        delay(50);
+    }
+    Stop();
+    ToAngle(0);
 }
 
 void PidMotor::SetSpeed(bool forward, uint8_t speed)
@@ -52,11 +69,12 @@ void PidMotor::ToAngle(int angle)
     targetAngle = angle;
     isActive = true;
     angleController.Reset();
+    Serial.println((int)encoder.GetAngle());
 }
 
 void PidMotor::Stop()
 {
-    SetSpeed(true, 0);
+    SetMotorSpeed(0);
 }
 
 bool PidMotor::IsActive() const
@@ -77,9 +95,7 @@ double PidMotor::HandleSpeedFeedForward(double deltaTime)
 
 void PidMotor::SetMotorSpeed(double speed)
 {
-    const double minSpeed = 35;
     const double zeroRange = 0.1;
-    const double maxSpeed = 255;
     
     bool forward = speed > 0;
     speed = constrain(abs(speed), 0, maxSpeed);

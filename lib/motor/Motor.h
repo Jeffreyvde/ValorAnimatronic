@@ -29,10 +29,10 @@ public:
     void Tick();
 
     /**
-     * @brief Set up the motor pins
+     * @brief Calibrates the minimum speed for the motor
      *
      */
-    void SetUp();
+    void Calibrate();
 
     /**
      * @brief Set the Speed object
@@ -80,6 +80,10 @@ private:
 
     long long lastMillis = 0;
     long long lastAngle = 0;
+
+    double minSpeed = 27;
+    const double maxSpeed = 255;
+
 
     /**
      * @brief Handle the calculations for angle controlling
