@@ -29,7 +29,9 @@ void Animation::Play()
 void Animation::Tick()
 {
     if(!started)
+    {
         return;
+    }
 
     const unsigned long time = millis();
     for (uint16_t i = 0; i < components; i++)
