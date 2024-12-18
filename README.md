@@ -1,22 +1,35 @@
 # Valor Animatronic
 
-## Pin usage
+
+## Animation instructions
+### Head servo
+Position  | Angle |
+----|----|
+ Left   | 180  |
+ Middle | 90 |
+ Right | 0 |
+
+
+### Wing servo
+Position  | Angle |
+----|----|
+ Up  | 120 |
+ Down| 180 |
+
+## Assembly  
+### Wiring Diagram
+![Wiring Diagram](docs/diagrams/WireDiagram.drawio.png "Wiring Diagram")
+
+### Pin usage
 Pin  | Type  | Purpose   |
 ----|----|---|
- 2  | INPUT | Motor Bottom C1  |
- 3  | INPUT  | Motor Top C1   |
- 4  | PULL_UP  | Button  |
- 5  | INPUT | Motor Top C2 |
- 6  | PWM  | Motor Driver BIN2  |
- 8  | INPUT  | Motor Bottom C2   |
- 9  | PWM | Motor Driver  PWMB  |
- 10  | PWM | Motor Driver AIN2 |
- 11  | PWM | Motor Driver PWMA |
- 12  | OUTPUT | Led Head movement indicator |
- 13  | OUTPUT | Led Wing movement indicator |
-  A3  | OUTPUT | Motor Driver AIN1 |
-  A4  | OUTPUT | Motor Driver STDBY |
-  A5  | OUTPUT | Motor Driver BIN1 |
+ 0  | Serial | MP3 module  TX |
+ 1  | Serial | MP3 module  RX |
+ 3  | INPUT  | Button         |
+ 10 | PWM | Wing Servo        |
+ 11 | PWM | Head Servo        |
 
-Objectives:
-- Implement motor calibration on startup
+### STL Files
+
+
+### Assembly instructions

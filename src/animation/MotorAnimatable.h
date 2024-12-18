@@ -4,7 +4,7 @@
 #pragma once
 
 #include "IAnimatable.h"
-#include "Motor.h"
+#include <Servo.h>
 
 /**
  * @brief An animation component to move motors
@@ -17,9 +17,8 @@ public:
     /**
      * @brief Construct a new Motor Animatable object
      * 
-     * @param motor The motor that is animated
      */
-    MotorAnimatable(PidMotor& motor);
+    MotorAnimatable(Servo& motor, int defaultPoint);
 
     /**
      * @brief Instruct the motor to go to a specific angle position.
@@ -41,10 +40,9 @@ public:
      * 
      */
     void Stop() override;
-
 private:
-    PidMotor& motor;
-
+    Servo& motor;
+    int defaultPoint;
 };
 
 #endif

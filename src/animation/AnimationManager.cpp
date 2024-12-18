@@ -16,7 +16,9 @@ void AnimationManager::SetCap(uint16_t highestAnimationIndex)
 void AnimationManager::PlayNext()
 {
     if(IsBusy())
+    {
         return;
+    }
 
     animations[currentAnimation].Play();
     currentAnimation = (currentAnimation + 1) % (highestAnimationIndex + 1);
