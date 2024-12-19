@@ -5,8 +5,9 @@
 #include "animation/MotorAnimatable.h"
 #include "animation/Animation.h"
 #include "animation/IAnimatable.h"
+#include "Speaker.h"
+#include "animation/SpeakerAnimatable.h"
 #include <Arduino.h>
-
 #include <Servo.h>
 
 #define AIN1 A3
@@ -30,33 +31,44 @@ constexpr uint8_t buttonPin = 4;
 Button button(buttonPin);
 Servo headServo;
 Servo wingServo;
+Speaker speaker(Serial1, 15);
 
 MotorAnimatable wingAnimatable(wingServo, 180);
 MotorAnimatable headAnimatable(headServo, 90);
+SpeakerAnimatable speakerAnimatable(speaker);
 
-IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable};
+IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable, &speakerAnimatable};
 
-TimelineValue baseAnimationValuesHead[] = {{"0", 5000, 0}, {"180", 5000, 0}, {"90", 5000, 0}};
+TimelineValue baseAnimationValuesHead[] = {{"0", 3000, 0}, {"180", 3000, 0}, {"90", 3000, 0}};
 Timeline baseAnimationTimelineHead = {sizeof(baseAnimationValuesHead) / sizeof(TimelineValue), baseAnimationValuesHead};
 
-TimelineValue baseAnimationValuesWing[] =  {{"80", 500, 0}, {"140", 5000, 0}, {"180", 500, 0}, {"110", 500, 0}, {"140", 100, 0}, {"180", 500, 0}};
+TimelineValue baseAnimationValuesWing[] =  {{"110", 0, 0}, {"140", 2000, 0}, {"180", 500, 0}, {"110", 3000, 0}, {"140", 100, 0}, {"180", 500, 0}};
 Timeline baseAnimationTimelineWing = {sizeof(baseAnimationValuesWing) / sizeof(TimelineValue), baseAnimationValuesWing};
 
-Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing};
-Animation baseAnimation(baseAnimationTimeline, animationComponents, 2);
+TimelineValue baseAnimationValuesSpeaker[] =  {{"1", 0, 0}, {"1", 5000, 0}};
+Timeline baseAnimationTimelineSpeaker = {sizeof(baseAnimationValuesSpeaker) / sizeof(TimelineValue), baseAnimationValuesSpeaker};
+
+
+Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing, baseAnimationTimelineSpeaker};
+Animation baseAnimation(baseAnimationTimeline, animationComponents, 3);
 
 Animation animations[] = {baseAnimation};
 AnimationManager animationManager(animations, sizeof(animations) / sizeof(Animation));
 
 void setup()
 {
+  // Initialize serial communication
   Serial.begin(9600);
+  Serial1.begin(9600);
 
   wingServo.attach(10);
   headServo.attach(11);
+
+  // Set to default positions
   wingServo.write(180);
   headServo.write(90);
-  delay(500);
+
+  delay(1000);
   animationManager.PlayNext();
 }
 
