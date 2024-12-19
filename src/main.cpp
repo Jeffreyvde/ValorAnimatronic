@@ -10,23 +10,13 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-#define AIN1 A3
-#define STBY A4
-#define BIN1 A5
-#define BIN2 6
-#define PWMB 9
-#define AIN2 10
-#define PWMA 11
-
 const int offsetA = -1;
 const int offsetB = 1;
 
 long long minimumDeltaTime = 20;
 long long tickTime = 0;
 
-constexpr uint8_t headEncoderPin = 3;
-constexpr uint8_t wingEncoderPin = 2;
-constexpr uint8_t buttonPin = 4;
+constexpr uint8_t buttonPin = 2;
 
 Button button(buttonPin);
 Servo headServo;
@@ -42,7 +32,7 @@ IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable, &speaker
 TimelineValue baseAnimationValuesHead[] = {{"0", 3000, 0}, {"180", 3000, 0}, {"90", 3000, 0}};
 Timeline baseAnimationTimelineHead = {sizeof(baseAnimationValuesHead) / sizeof(TimelineValue), baseAnimationValuesHead};
 
-TimelineValue baseAnimationValuesWing[] =  {{"110", 0, 0}, {"140", 2000, 0}, {"180", 500, 0}, {"110", 3000, 0}, {"140", 100, 0}, {"180", 500, 0}};
+TimelineValue baseAnimationValuesWing[] =  {{"110", 0, 0}, {"140", 2000, 0}, {"180", 500, 0}, {"110", 3000, 0}, {"140", 2000, 0}, {"180", 500, 0}};
 Timeline baseAnimationTimelineWing = {sizeof(baseAnimationValuesWing) / sizeof(TimelineValue), baseAnimationValuesWing};
 
 TimelineValue baseAnimationValuesSpeaker[] =  {{"1", 0, 0}, {"1", 5000, 0}};
@@ -55,11 +45,24 @@ Animation baseAnimation(baseAnimationTimeline, animationComponents, 3);
 Animation animations[] = {baseAnimation};
 AnimationManager animationManager(animations, sizeof(animations) / sizeof(Animation));
 
+void handleButtonPress()
+{
+  button.Tick();
+  if(button.GetState() == Button::ButtonState::EndPress)
+  {
+      animationManager.PlayNext();
+  }
+}
+
 void setup()
 {
   // Initialize serial communication
   Serial.begin(9600);
   Serial1.begin(9600);
+
+  button.SetUp();
+
+  attachInterrupt(digitalPinToInterrupt(buttonPin), handleButtonPress, CHANGE);
 
   wingServo.attach(10);
   headServo.attach(11);
@@ -67,9 +70,6 @@ void setup()
   // Set to default positions
   wingServo.write(180);
   headServo.write(90);
-
-  delay(1000);
-  animationManager.PlayNext();
 }
 
 void loop()
