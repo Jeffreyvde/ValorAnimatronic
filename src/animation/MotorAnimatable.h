@@ -16,7 +16,8 @@ public:
 
     /**
      * @brief Construct a new Motor Animatable object
-     * 
+     * @param motor  the motor to control with the animations
+     * @param defualtPoint the place where it sends the motor to stop it
      */
     MotorAnimatable(Servo& motor, int defaultPoint);
 

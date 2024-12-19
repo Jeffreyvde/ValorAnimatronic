@@ -15,9 +15,9 @@ public:
     /**
      * @brief Construct a new Pid Controller object
      * 
-     * @param pWeight 
-     * @param iWeight 
-     * @param dWeight 
+     * @param pWeight the proportional weight
+     * @param iWeight the integral weight
+     * @param dWeight the derivative weight
      */
     PidController(double pWeight, double iWeight, double dWeight);
 
