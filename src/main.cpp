@@ -4,6 +4,7 @@
 #include "animation/AnimationManager.h"
 #include "animation/MotorAnimatable.h"
 #include "animation/Animation.h"
+#include "Timelines.h"
 #include "animation/IAnimatable.h"
 #include "Speaker.h"
 #include "animation/SpeakerAnimatable.h"
@@ -29,20 +30,10 @@ SpeakerAnimatable speakerAnimatable(speaker);
 
 IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable, &speakerAnimatable};
 
-TimelineValue baseAnimationValuesHead[] = {{"0", 3000, 0}, {"180", 3000, 0}, {"90", 3000, 0}};
-Timeline baseAnimationTimelineHead = {sizeof(baseAnimationValuesHead) / sizeof(TimelineValue), baseAnimationValuesHead};
+Animation baseAnimation(baseAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
+Animation secondAnimation(secondAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
 
-TimelineValue baseAnimationValuesWing[] =  {{"110", 0, 0}, {"140", 2000, 0}, {"180", 500, 0}, {"110", 3000, 0}, {"140", 2000, 0}, {"180", 500, 0}};
-Timeline baseAnimationTimelineWing = {sizeof(baseAnimationValuesWing) / sizeof(TimelineValue), baseAnimationValuesWing};
-
-TimelineValue baseAnimationValuesSpeaker[] =  {{"1", 0, 0}, {"1", 5000, 0}};
-Timeline baseAnimationTimelineSpeaker = {sizeof(baseAnimationValuesSpeaker) / sizeof(TimelineValue), baseAnimationValuesSpeaker};
-
-
-Timeline baseAnimationTimeline[] = {baseAnimationTimelineHead, baseAnimationTimelineWing, baseAnimationTimelineSpeaker};
-Animation baseAnimation(baseAnimationTimeline, animationComponents, 3);
-
-Animation animations[] = {baseAnimation};
+Animation animations[] = {secondAnimation, baseAnimation};
 AnimationManager animationManager(animations, sizeof(animations) / sizeof(Animation));
 
 void handleButtonPress()
