@@ -1,6 +1,5 @@
 #include "MotorAnimatable.h"
 #include <stdlib.h>
-#include <Arduino.h>
 
 MotorAnimatable::MotorAnimatable(Servo &motor, int defaultPoint)
     : motor(motor), defaultPoint(defaultPoint)
@@ -10,7 +9,6 @@ MotorAnimatable::MotorAnimatable(Servo &motor, int defaultPoint)
 void MotorAnimatable::Start(const char instruction[])
 {
     int value = atoi(instruction);
-    Serial.println(value);
     motor.write(value);
 }
 
