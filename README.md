@@ -2,14 +2,19 @@
 
 
 ## Animation instructions
+Each step in the timeline is sequential, so if there is a 1000-second delay, the second animation component will only start after the first finishes.
+
+The animation system comprises of a TimeLineValue array which holds all the values on the timeline. The Timeline consists of an array of values and its length. The Animation contains the AnimationComponents (must be in the same order as it is in the TimeLine) and the TimeLine.
+For an example of creating a timeline go to "Timelines.h" and "main.cpp". 
+
+After the final step of the animation, the robot goes to the default position. Wings down and head forward.
+
 ### Animation values
 Variable  | Meaning | Supported values |
 ----|----| ---- |
  instruction  | Instruction to the animatable component. For motors it is the angle where the motor goes and for the speaker, it refers to the song. |  Up to 16 characters string. 
  delay | Delay in milliseconds. Essentially how long does it wait to start playing this part. | All long values| 
  maxDuration | Maximum duration in milliseconds. How does it stay on this step or when it is finished.  For a servo, there is no finish so it stays for that duration in the animation state. | All long values| 
-
-After the final step of the animation, the robot goes to the default position. Wings down and head forward.
 
 ### Head servo
 Position  | Angle |
