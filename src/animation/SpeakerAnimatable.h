@@ -25,7 +25,7 @@ public:
      * 
      * @param instruction The instruction are "Play" to play the current song and ""
      */
-    void Start(const char instruction[]) override;
+    void Start(const std::string& instruction) override;
 
     /**
      * @brief Check wether the motor is at that angle position
