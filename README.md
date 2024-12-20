@@ -2,6 +2,15 @@
 
 
 ## Animation instructions
+### Animation values
+Variable  | Meaning | Supported values |
+----|----| ---- |
+ instruction  | Instruction to the animatable component. For motors it is the angle where the motor goes and for the speaker, it refers to the song. |  Up to 16 characters string. 
+ delay | Delay in milliseconds. Essentially how long does it wait to start playing this part. | All long values| 
+ maxDuration | Maximum duration in milliseconds. How does it stay on this step or when it is finished.  For a servo, there is no finish so it stays for that duration in the animation state. | All long values| 
+
+After the final step of the animation, the robot goes to the default position. Wings down and head forward.
+
 ### Head servo
 Position  | Angle |
 ----|----|
@@ -13,8 +22,11 @@ Position  | Angle |
 ### Wing servo
 Position  | Angle |
 ----|----|
- Up  | 120 |
+ Up  | 110 |
  Down| 180 |
+
+Wings take about 2000 milliseconds to go up.
+
 
 ## Assembly  
 ### Wiring Diagram
