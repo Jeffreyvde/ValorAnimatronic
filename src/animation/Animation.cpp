@@ -23,6 +23,7 @@ void Animation::Play()
     {
         return;
     }
+    Reset();
     started = true;
 }
 
@@ -110,9 +111,13 @@ void Animation::Reset()
 
 void Animation::StartComponentInstruction(uint16_t componentIndex)
 {
-    uint16_t step = animationSteps[componentIndex].step;
+    AnimationElementData* data = &animationSteps[componentIndex]; 
+    uint16_t step = data->step;
+    const TimelineValue value = timelines[componentIndex].values[step];
+
     animationComponents[componentIndex]->Start(timelines[componentIndex].values[step].instruction);
-    animationSteps[componentIndex].state = AnimationState::Active;
+    data->animationEndTime = millis() + value.maxDuration;
+    data->state = AnimationState::Active;
 }
 
 void Animation::SetInstructionDelay(uint16_t componentIndex)
@@ -122,7 +127,7 @@ void Animation::SetInstructionDelay(uint16_t componentIndex)
     const unsigned long currentTime = millis();
     const TimelineValue value = timelines[componentIndex].values[data->step];
     data->animationActivationTime = currentTime + value.delay;
-    data->animationEndTime = currentTime + value.maxDuration;
+    
     data->state = AnimationState::Waiting;
 }
 
