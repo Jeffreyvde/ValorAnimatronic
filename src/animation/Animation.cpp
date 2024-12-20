@@ -1,11 +1,10 @@
 #include "Animation.h"
 #include "Arduino.h"
 
-Animation::Animation(const std::vector<TimeLine>& timelines, IAnimatable* animationComponents[], uint16_t components)
-    : timelines(timelines)
-    , animationComponents(animationComponents)
-    , components(components)
-    , animationSteps(components)
+Animation::Animation(const std::vector<TimeLine> &timelines,
+                     std::vector<std::reference_wrapper<IAnimatable>> animationComponents,
+                     uint16_t components)
+    : timelines(timelines), animationComponents(animationComponents), components(components), animationSteps(components)
 
 {
     Reset();
@@ -13,7 +12,7 @@ Animation::Animation(const std::vector<TimeLine>& timelines, IAnimatable* animat
 
 void Animation::Play()
 {
-    if(started)
+    if (started)
     {
         return;
     }
@@ -23,25 +22,25 @@ void Animation::Play()
 
 void Animation::Tick()
 {
-    if(!started)
+    if (!started)
     {
         return;
     }
 
     const unsigned long time = millis();
     for (uint16_t i = 0; i < components; i++)
-    { 
-        AnimationElementData* data = &animationSteps.at(i);
+    {
+        AnimationElementData *data = &animationSteps.at(i);
         switch (data->state)
         {
         case AnimationState::Active:
-            if(animationComponents[i]->IsFinished() || time > data->animationEndTime)
+            if (animationComponents.at(i).get().IsFinished() || time > data->animationEndTime)
             {
-                data->step++; 
-                if(AtLastStep(i))
+                data->step++;
+                if (AtLastStep(i))
                 {
                     data->state = AnimationState::Idle;
-                    animationComponents[i]->Stop();
+                    animationComponents.at(i).get().Stop();
                 }
                 else
                 {
@@ -50,7 +49,7 @@ void Animation::Tick()
             }
             break;
         case AnimationState::Waiting:
-            if(time > data->animationActivationTime)
+            if (time > data->animationActivationTime)
             {
                 StartComponentInstruction(i);
             }
@@ -60,8 +59,8 @@ void Animation::Tick()
             break;
         }
     }
-    
-    if(!IsBusy())
+
+    if (!IsBusy())
     {
         started = false;
         Reset();
@@ -72,21 +71,21 @@ void Animation::Stop()
 {
     for (uint16_t i = 0; i < components; i++)
     {
-        animationComponents[i]->Stop();
+        animationComponents.at(i).get().Stop();
     }
     Reset();
 }
 
 bool Animation::IsBusy() const
 {
-    if(!started)
+    if (!started)
     {
         return false;
     }
 
     for (uint16_t i = 0; i < components; i++)
     {
-        if(!AtLastStep(i) || animationSteps.at(i).state != AnimationState::Idle)
+        if (!AtLastStep(i) || animationSteps.at(i).state != AnimationState::Idle)
         {
             return true;
         }
@@ -95,37 +94,37 @@ bool Animation::IsBusy() const
 }
 
 void Animation::Reset()
-{   
+{
     started = false;
     for (uint16_t i = 0; i < components; i++)
-    { 
+    {
         animationSteps.at(i) = {0, AnimationState::Waiting, millis() + timelines.at(i).at(0).delay};
     }
 }
 
 void Animation::StartComponentInstruction(uint16_t componentIndex)
 {
-    AnimationElementData* data = &animationSteps[componentIndex]; 
+    AnimationElementData *data = &animationSteps.at(componentIndex);
     uint16_t step = data->step;
     const TimeLineValue value = timelines.at(componentIndex).at(step);
 
-    animationComponents[componentIndex]->Start(timelines.at(componentIndex).at(step).instruction);
+    animationComponents.at(componentIndex).get().Start(timelines.at(componentIndex).at(step).instruction);
     data->animationEndTime = millis() + value.maxDuration;
     data->state = AnimationState::Active;
 }
 
 void Animation::SetInstructionDelay(uint16_t componentIndex)
 {
-    AnimationElementData* data = &animationSteps[componentIndex]; 
+    AnimationElementData *data = &animationSteps.at(componentIndex);
 
     const unsigned long currentTime = millis();
     const TimeLineValue value = timelines.at(componentIndex).at(data->step);
     data->animationActivationTime = currentTime + value.delay;
-    
+
     data->state = AnimationState::Waiting;
 }
 
 bool Animation::AtLastStep(uint16_t componentIndex) const
 {
-    return animationSteps[componentIndex].step >= timelines.at(componentIndex).size();
+    return animationSteps.at(componentIndex).step >= timelines.at(componentIndex).size();
 }

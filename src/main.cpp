@@ -10,6 +10,8 @@
 #include "animation/SpeakerAnimatable.h"
 #include <Arduino.h>
 #include <Servo.h>
+#include <vector>
+#include <functional>
 
 const int offsetA = -1;
 const int offsetB = 1;
@@ -28,7 +30,7 @@ MotorAnimatable headAnimatable(headServo, 90);
 MotorAnimatable wingAnimatable(wingServo, 180);
 SpeakerAnimatable speakerAnimatable(speaker);
 
-IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable, &speakerAnimatable};
+std::vector<std::reference_wrapper<IAnimatable>> animationComponents = {headAnimatable, wingAnimatable, speakerAnimatable};
 
 Animation baseAnimation(baseAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
 Animation secondAnimation(secondAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
