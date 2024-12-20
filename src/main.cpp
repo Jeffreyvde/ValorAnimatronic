@@ -24,16 +24,17 @@ Servo headServo;
 Servo wingServo;
 Speaker speaker(Serial1, 15);
 
-MotorAnimatable wingAnimatable(wingServo, 180);
 MotorAnimatable headAnimatable(headServo, 90);
+MotorAnimatable wingAnimatable(wingServo, 180);
 SpeakerAnimatable speakerAnimatable(speaker);
 
 IAnimatable* animationComponents[] = {&headAnimatable, &wingAnimatable, &speakerAnimatable};
 
 Animation baseAnimation(baseAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
 Animation secondAnimation(secondAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
+Animation thridAnimation(thirdAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
 
-Animation animations[] = {secondAnimation, baseAnimation};
+Animation animations[] = {secondAnimation, thridAnimation,  baseAnimation};
 AnimationManager animationManager(animations, sizeof(animations) / sizeof(Animation));
 
 void handleButtonPress()
