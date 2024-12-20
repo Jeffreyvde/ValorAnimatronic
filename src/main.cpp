@@ -32,19 +32,19 @@ SpeakerAnimatable speakerAnimatable(speaker);
 
 std::vector<std::reference_wrapper<IAnimatable>> animationComponents = {headAnimatable, wingAnimatable, speakerAnimatable};
 
-Animation baseAnimation(baseAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
-Animation secondAnimation(secondAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
-Animation thridAnimation(thirdAnimationTimeline, animationComponents, sizeof(animationComponents) / sizeof(IAnimatable));
+Animation baseAnimation(baseAnimationTimeline, animationComponents);
+Animation secondAnimation(secondAnimationTimeline, animationComponents);
+Animation thridAnimation(thirdAnimationTimeline, animationComponents);
 
-Animation animations[] = {secondAnimation, thridAnimation,  baseAnimation};
-AnimationManager animationManager(animations, sizeof(animations) / sizeof(Animation));
+std::vector<Animation> animations = {secondAnimation, thridAnimation, baseAnimation};
+AnimationManager animationManager(animations);
 
 void handleButtonPress()
 {
   button.Tick();
-  if(button.GetState() == Button::ButtonState::EndPress)
+  if (button.GetState() == Button::ButtonState::EndPress)
   {
-      animationManager.PlayNext();
+    animationManager.PlayNext();
   }
 }
 

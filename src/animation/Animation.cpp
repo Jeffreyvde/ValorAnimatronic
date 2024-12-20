@@ -2,9 +2,11 @@
 #include "Arduino.h"
 
 Animation::Animation(const std::vector<TimeLine> &timelines,
-                     std::vector<std::reference_wrapper<IAnimatable>> animationComponents,
-                     uint16_t components)
-    : timelines(timelines), animationComponents(animationComponents), components(components), animationSteps(components)
+                     std::vector<std::reference_wrapper<IAnimatable>> animationComponents)
+    : timelines(timelines), 
+      animationComponents(animationComponents), 
+      components(animationComponents.size()), 
+      animationSteps(components)
 
 {
     Reset();
