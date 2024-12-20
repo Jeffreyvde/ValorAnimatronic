@@ -19,7 +19,7 @@ void AnimationManager::PlayNext()
     {
         return;
     }
-
+    
     animations[currentAnimation].Play();
     currentAnimation = (currentAnimation + 1) % (highestAnimationIndex + 1);
 }
