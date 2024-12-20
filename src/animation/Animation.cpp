@@ -5,9 +5,9 @@ Animation::Animation(const std::vector<TimeLine>& timelines, IAnimatable* animat
     : timelines(timelines)
     , animationComponents(animationComponents)
     , components(components)
+    , animationSteps(components)
 
 {
-    animationSteps = (AnimationElementData*)malloc(sizeof(AnimationElementData) * components);
     Reset();
 }
 
@@ -31,7 +31,7 @@ void Animation::Tick()
     const unsigned long time = millis();
     for (uint16_t i = 0; i < components; i++)
     { 
-        AnimationElementData* data = &animationSteps[i];
+        AnimationElementData* data = &animationSteps.at(i);
         switch (data->state)
         {
         case AnimationState::Active:
@@ -86,7 +86,7 @@ bool Animation::IsBusy() const
 
     for (uint16_t i = 0; i < components; i++)
     {
-        if(!AtLastStep(i) || animationSteps[i].state != AnimationState::Idle)
+        if(!AtLastStep(i) || animationSteps.at(i).state != AnimationState::Idle)
         {
             return true;
         }
@@ -99,7 +99,7 @@ void Animation::Reset()
     started = false;
     for (uint16_t i = 0; i < components; i++)
     { 
-        animationSteps[i] = {0, AnimationState::Waiting, millis() + timelines.at(i).at(0).delay};
+        animationSteps.at(i) = {0, AnimationState::Waiting, millis() + timelines.at(i).at(0).delay};
     }
 }
 

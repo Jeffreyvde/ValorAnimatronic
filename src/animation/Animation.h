@@ -121,7 +121,7 @@ private:
     IAnimatable** animationComponents; 
     uint16_t components;
 
-    AnimationElementData* animationSteps;
+    std::vector<AnimationElementData> animationSteps;
     bool started = false;
 };
 
