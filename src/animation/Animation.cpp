@@ -1,7 +1,7 @@
 #include "Animation.h"
 #include "Arduino.h"
 
-Animation::Animation(Timeline timelines[], IAnimatable* animationComponents[], uint16_t components)
+Animation::Animation(const std::vector<TimeLine>& timelines, IAnimatable* animationComponents[], uint16_t components)
     : timelines(timelines)
     , animationComponents(animationComponents)
     , components(components)
@@ -9,12 +9,6 @@ Animation::Animation(Timeline timelines[], IAnimatable* animationComponents[], u
 {
     animationSteps = (AnimationElementData*)malloc(sizeof(AnimationElementData) * components);
     Reset();
-}
-
-Animation::~Animation()
-{
-    free(animationSteps);
-    animationSteps = nullptr;
 }
 
 void Animation::Play()
@@ -105,7 +99,7 @@ void Animation::Reset()
     started = false;
     for (uint16_t i = 0; i < components; i++)
     { 
-        animationSteps[i] = {0, AnimationState::Waiting, millis() + timelines[i].values[0].delay};
+        animationSteps[i] = {0, AnimationState::Waiting, millis() + timelines.at(i).at(0).delay};
     }
 }
 
@@ -113,9 +107,9 @@ void Animation::StartComponentInstruction(uint16_t componentIndex)
 {
     AnimationElementData* data = &animationSteps[componentIndex]; 
     uint16_t step = data->step;
-    const TimelineValue value = timelines[componentIndex].values[step];
+    const TimeLineValue value = timelines.at(componentIndex).at(step);
 
-    animationComponents[componentIndex]->Start(timelines[componentIndex].values[step].instruction);
+    animationComponents[componentIndex]->Start(timelines.at(componentIndex).at(step).instruction);
     data->animationEndTime = millis() + value.maxDuration;
     data->state = AnimationState::Active;
 }
@@ -125,7 +119,7 @@ void Animation::SetInstructionDelay(uint16_t componentIndex)
     AnimationElementData* data = &animationSteps[componentIndex]; 
 
     const unsigned long currentTime = millis();
-    const TimelineValue value = timelines[componentIndex].values[data->step];
+    const TimeLineValue value = timelines.at(componentIndex).at(data->step);
     data->animationActivationTime = currentTime + value.delay;
     
     data->state = AnimationState::Waiting;
@@ -133,5 +127,5 @@ void Animation::SetInstructionDelay(uint16_t componentIndex)
 
 bool Animation::AtLastStep(uint16_t componentIndex) const
 {
-    return animationSteps[componentIndex].step >= timelines[componentIndex].length;
+    return animationSteps[componentIndex].step >= timelines.at(componentIndex).size();
 }

@@ -3,9 +3,10 @@
 
 #pragma once
 
-#include <stdint.h>
-#include "Timeline.h"
 #include "IAnimatable.h"
+#include "TimeLineValue.h"
+#include "TimeLine.h"
+#include <vector>
 
 /**
  * @brief A class that represents an animation
@@ -21,13 +22,7 @@ public:
      * @param animationComponents The components for the timeline
      * @param components The amount of components. Should be the length of both arrays.
      */
-    Animation(Timeline timelines[], IAnimatable* animationComponents[], uint16_t components);
-
-    /**
-     * @brief Destroy the Animation object
-     * 
-     */
-    ~Animation();
+    Animation(const std::vector<TimeLine>& timelines, IAnimatable* animationComponents[], uint16_t components);
 
     /**
      * @brief Play the animation. If the animation is already playing this is ignored.
@@ -122,7 +117,7 @@ private:
      */
     bool AtLastStep(uint16_t componentIndex) const;
 
-    Timeline* timelines;
+    const std::vector<TimeLine>& timelines;
     IAnimatable** animationComponents; 
     uint16_t components;
 

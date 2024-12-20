@@ -2,7 +2,7 @@
 #ifndef TIMELINE_VALUE_H
 #define TIMELINE_VALUE_H
 
-# pragma once
+#pragma once
 
 #include <string>
 
@@ -10,7 +10,7 @@
  * @brief A value on the timeline
  * 
  */
-struct TimelineValue
+struct TimeLineValue
 {
     const std::string& instruction; // Instruction
     unsigned long delay; // Delay in milliseconds
@@ -22,7 +22,7 @@ struct TimelineValue
      * @param delay the delay in milliseconds
      * @param maxDuration the maximum duration of the animation in milliseconds
      */
-    TimelineValue(const std::string& instruction, unsigned long delay, unsigned long maxDuration) 
+    TimeLineValue(const std::string& instruction, unsigned long delay, unsigned long maxDuration) 
          : instruction(instruction), delay(delay), maxDuration(maxDuration)
     {
 
