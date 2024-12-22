@@ -6,10 +6,9 @@ Animation::Animation(const std::vector<TimeLine> &timelines,
     : timelines(timelines), 
       animationComponents(animationComponents), 
       components(animationComponents.size()), 
-      animationSteps(components)
+      animationSteps(components, {0, AnimationState::Waiting, 0, 0})
 
 {
-    Reset();
 }
 
 void Animation::Play()
@@ -100,7 +99,11 @@ void Animation::Reset()
     started = false;
     for (uint16_t i = 0; i < components; i++)
     {
-        animationSteps.at(i) = {0, AnimationState::Waiting, millis() + timelines.at(i).at(0).delay};
+        AnimationElementData& animationStep =  animationSteps.at(i);
+        animationStep.step = 0;
+        animationStep.state = AnimationState::Waiting;
+        animationStep.animationActivationTime = millis() + ((timelines.at(i).size() > 0) ?  timelines.at(i).at(0).delay : 0);
+        animationStep.animationEndTime = 0;
     }
 }
 
