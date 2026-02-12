@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <string>
 
 /**
  * @brief An interface for an object that is a part of an animation
@@ -19,7 +19,7 @@ public:
      * 
      * @param instruction The instruction for what the animatable object should do 
      */
-    virtual void Start(const char instruction[]) = 0;
+    virtual void Start(const std::string& instruction) = 0;
 
     /**
      * @brief Check if the animatable object has fulfilled the task

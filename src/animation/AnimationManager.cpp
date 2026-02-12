@@ -1,9 +1,9 @@
 #include "AnimationManager.h"
 #include "Arduino.h"
 
-AnimationManager::AnimationManager(Animation animations[], uint16_t animationCount)
+AnimationManager::AnimationManager(std::vector<Animation>& animations)
     : animations(animations)
-    , animationCount(animationCount)
+    , animationCount(animations.size())
     , highestAnimationIndex(max(animationCount - 1, 0))
 {
 }
@@ -20,7 +20,7 @@ void AnimationManager::PlayNext()
         return;
     }
     
-    animations[currentAnimation].Play();
+    animations.at(currentAnimation).Play();
     currentAnimation = (currentAnimation + 1) % (highestAnimationIndex + 1);
 }
 
@@ -31,13 +31,13 @@ bool AnimationManager::IsBusy() const
 
 void AnimationManager::Stop()
 {
-    animations[currentAnimation].Stop();
+    animations.at(currentAnimation).Stop();
 }
 
 void AnimationManager::Tick()
 {
     for (uint16_t i = 0; i <= highestAnimationIndex; i++)
     {
-        animations[i].Tick();
+        animations.at(i).Tick();
     }
 }

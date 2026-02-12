@@ -5,6 +5,7 @@
 
 #include "IAnimatable.h"
 #include <Servo.h>
+#include <string>
 
 /**
  * @brief An animation component to move motors
@@ -26,7 +27,7 @@ public:
      * 
      * @param instruction The instruction for what the animatable object should do. The value is only the Angle that it should go to.
      */
-    void Start(const char instruction[]) override;
+    void Start(const std::string& instruction) override;
 
     /**
      * @brief Check wether the motor is at that angle position

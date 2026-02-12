@@ -4,9 +4,9 @@ SpeakerAnimatable::SpeakerAnimatable(Speaker& speaker): speaker(speaker)
 {
 }
 
-void SpeakerAnimatable::Start(const char instruction[])
+void SpeakerAnimatable::Start(const std::string& instruction)
 {
-    int value = atoi(instruction);
+    int value = std::stoi(instruction);
     speaker.Play(value);
 }
 

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "Animation.h"
-#include <stdint.h>
+#include <vector>
 
 class AnimationManager
 {
@@ -13,9 +13,8 @@ public:
      * @brief Construct a new Animation Manager object
      * 
      * @param animations The animations it can play
-     * @param animationCount The animation count
      */
-    AnimationManager(Animation animations[], uint16_t animationCount);
+    AnimationManager(std::vector<Animation>& animations);
 
     /**
      * @brief Set a cap for what animations we allow. The default is animationCount -1.
@@ -50,7 +49,7 @@ public:
      */
     void Tick();
 private:
-    Animation* animations;
+    std::vector<Animation>& animations;
     uint16_t animationCount;
     uint16_t highestAnimationIndex;
     uint16_t currentAnimation = 0; 
